@@ -1,0 +1,16 @@
+[Unit]
+Description=Iris AI GitHub Webhook Server
+After=network.target
+
+[Service]
+Type=simple
+User=ishaantheman
+WorkingDirectory=/home/ishaantheman
+ExecStart=/usr/bin/python3 /home/ishaantheman/iris-app/webhooks/webhook-server.py
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

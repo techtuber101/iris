@@ -1,5 +1,4 @@
-version: '3.8'
-
+version: .3.8.
 services:
   redis:
     image: redis:7-alpine
@@ -17,7 +16,7 @@ services:
   backend:
     build:
       context: ./backend
-      dockerfile: Dockerfile
+      dockerfile: docker/Dockerfile
     ports:
       - "8000:8000"
     environment:
@@ -47,17 +46,17 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"
+      - 3000:3000
+    env_file:
+      - frontend/.env.local
     environment:
-      - NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
-      - NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
-      - NEXT_PUBLIC_BACKEND_URL=https://irisvision.ai/api
+      - NEXT_PUBLIC_SUPABASE_URL=
+      - NEXT_PUBLIC_SUPABASE_ANON_KEY=
+      - NEXT_PUBLIC_BACKEND_URL=https://irisvision.ai
       - NEXT_PUBLIC_URL=https://irisvision.ai
       - NEXT_PUBLIC_ENV_MODE=PRODUCTION
     volumes:
-      - ./frontend:/app
       - /app/node_modules
-      - /app/.next
     depends_on:
       - backend
     restart: unless-stopped
