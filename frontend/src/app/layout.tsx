@@ -85,9 +85,15 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/favicon.png", sizes: "any" },
+      { url: "/favicon.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon.png", sizes: "64x64", type: "image/png" },
+      { url: "/favicon.png", sizes: "128x128", type: "image/png" },
+      { url: "/favicon.png", sizes: "256x256", type: "image/png" },
+      { url: "/favicon.png", sizes: "512x512", type: "image/png" },
+      { url: "/favicon.png", sizes: "1024x1024", type: "image/png" },
     ],
     shortcut: "/favicon.png",
+    apple: "/favicon.png",
   },
   // manifest: "/manifest.json",
   alternates: {
@@ -105,6 +111,17 @@ export default function RootLayout({
       <head>
         {/* Preconnect to backend for faster streaming setup */}
         <link rel="preconnect" href={process.env.NEXT_PUBLIC_BACKEND_URL || ''} />
+        
+        {/* Favicon links for better browser support */}
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
+        <link rel="icon" type="image/png" sizes="64x64" href="/favicon.png" />
+        <link rel="icon" type="image/png" sizes="128x128" href="/favicon.png" />
+        <link rel="icon" type="image/png" sizes="256x256" href="/favicon.png" />
+        <link rel="icon" type="image/png" sizes="512x512" href="/favicon.png" />
+        <link rel="icon" type="image/png" sizes="1024x1024" href="/favicon.png" />
+        <link rel="shortcut icon" href="/favicon.png" />
+        <link rel="apple-touch-icon" href="/favicon.png" />
+        
         {/* Google Tag Manager */}
         <Script id="google-tag-manager" strategy="afterInteractive">
           {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
