@@ -1,0 +1,103 @@
+{
+  "timestamp": "2025-08-23 16:12:10",
+  "total_tests": 19,
+  "passed": 12,
+  "failed": 7,
+  "results": [
+    {
+      "test": "Environment var OPENAI_API_KEY",
+      "success": true,
+      "details": "Set"
+    },
+    {
+      "test": "Environment var SUPABASE_URL",
+      "success": false,
+      "details": "Not set"
+    },
+    {
+      "test": "Environment var SUPABASE_ANON_KEY",
+      "success": false,
+      "details": "Not set"
+    },
+    {
+      "test": "Debug mode detection",
+      "success": true,
+      "details": "Debug mode: OFF"
+    },
+    {
+      "test": "Share routes import",
+      "success": false,
+      "details": "No module named 'litellm'"
+    },
+    {
+      "test": "Agent orchestrator import",
+      "success": false,
+      "details": "No module named 'litellm'"
+    },
+    {
+      "test": "Debug utils import",
+      "success": true,
+      "details": ""
+    },
+    {
+      "test": "XML chunk extraction",
+      "success": false,
+      "details": ""
+    },
+    {
+      "test": "XML tool parsing",
+      "success": false,
+      "details": "Found 0 tool calls"
+    },
+    {
+      "test": "Multiple XML tools",
+      "success": false,
+      "details": "Found 0 tool calls"
+    },
+    {
+      "test": "Malformed XML handling",
+      "success": true,
+      "details": "Handled gracefully"
+    },
+    {
+      "test": "String/bytes conversion",
+      "success": true,
+      "details": ""
+    },
+    {
+      "test": "Sentinel cleaning",
+      "success": true,
+      "details": "Cleaned: 'Hello world\nExtra content'"
+    },
+    {
+      "test": "Parameter defaults",
+      "success": true,
+      "details": ""
+    },
+    {
+      "test": "Routing: 'What is the capital of France?...'",
+      "success": true,
+      "details": "Expected direct, got direct"
+    },
+    {
+      "test": "Routing: 'Search the web for recent AI n...'",
+      "success": true,
+      "details": "Expected agentic, got agentic"
+    },
+    {
+      "test": "Routing: 'Hello, how are you?...'",
+      "success": true,
+      "details": "Expected direct, got direct"
+    },
+    {
+      "test": "Routing: 'Download the latest data from ...'",
+      "success": true,
+      "details": "Expected agentic, got agentic"
+    },
+    {
+      "test": "Message normalization",
+      "success": true,
+      "details": "Normalized 3/3 messages"
+    }
+  ]
+}

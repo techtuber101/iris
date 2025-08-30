@@ -1,0 +1,51 @@
+# Caddyfile for Iris AI Production
+# Caddy will automatically handle SSL certificates
+
+irisvision.ai, www.irisvision.ai {
+    # Logging
+    log {
+        output file /var/log/caddy/access.log
+        format json
+    }
+
+    # Frontend (Next.js)
+    handle /* {
+        reverse_proxy frontend:3000 {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+        }
+    }
+
+    # API routes go to backend
+    handle /api/* {
+        reverse_proxy backend:8000 {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+        }
+    }
+
+    # Health check
+    handle /health {
+        reverse_proxy backend:8000
+    }
+
+    # Security headers
+    header {
+        # Security
+        X-Content-Type-Options nosniff
+        X-Frame-Options DENY
+        X-XSS-Protection "1; mode=block"
+        Referrer-Policy strict-origin-when-cross-origin
+        
+        # Performance
+        Cache-Control "public, max-age=31536000" /static/*
+        Cache-Control "public, max-age=86400" /_next/static/*
+    }
+
+    # Gzip compression
+    encode gzip
+}

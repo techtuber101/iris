@@ -1,0 +1,66 @@
+services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - ENV_MODE=local
+      - IRIS_SANDBOX_PROVIDER=daytona
+      - IRIS_REQUIRE_DAYTONA=true
+      - IRIS_SANDBOX_POOL_SIZE=1
+      - REDIS_HOST=redis        # 👈 service name, not localhost
+      - REDIS_PORT=6379
+      - REDIS_SSL=False
+      - SUPABASE_URL=https://tvzchovdetwgstfqpepp.supabase.co
+      - SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR2emNob3ZkZXR3Z3N0ZnFwZXBwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ1NzA1ODQsImV4cCI6MjA3MDE0NjU4NH0.tTLQkzjWjHqkjQSn2tjndDhqpy9B6iibbcLO0HCJpHM
+      - SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR2emNob3ZkZXR3Z3N0ZnFwZXBwIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NDU3MDU4NCwiZXhwIjoyMDcwMTQ2NTg0fQ.b4CdKbwti-uhq-3qrnCbR7D_nDXFRhtB-q2naFOQ7m0
+      - SUPABASE_SERVICE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR2emNob3ZkZXR3Z3N0ZnFwZXBwIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NDU3MDU4NCwiZXhwIvoyMDcwMTQ2NTg0fQ.b4CdKbwti-uhq-3qrnCbR7D_nDXFRhtB-q2naFOQ7m0
+      - SUPABASE_DB_SCHEMA=public
+      - GEMINI_API_KEY=AIzaSyDNlUaZTo8TMjXOjklzqD93jmCuxqha8Dk
+      - MODEL_TO_USE=gemini/gemini-2.5-pro
+    env_file:
+      - backend/.env
+    depends_on:
+      redis:
+        condition: service_healthy   # 👈 wait for Redis
+    volumes:
+      - ./backend:/app
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_BACKEND_URL=http://localhost:8000
+      - NEXT_PUBLIC_SUPABASE_URL=https://tvzchovdetwgstfqpepp.supabase.co
+      - NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR2emNob3ZkZXR3Z3N0ZnFwZXBwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ1NzA1ODQsImV4cCI6MjA3MDE0NjU4NH0.tTLQkzjWjHqkjQSn2tjndDhqpy9B6iibbcLO0HCJpHM
+      - SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR2emNob3ZkZXR3Z3N0ZnFwZXBwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ1NzA1ODQsImV4cCI6MjA3MDE0NjU4NH0.tTLQkzjWjHqkjQSn2tjndDhqpy9B6iibbcLO0HCJpHM
+      - SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR2emNob3ZkZXR3Z3N0ZnFwZXBwIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NDU3MDU4NCwiZXhwIjoyMDcwMTQ2NTg0fQ.b4CdKbwti-uhq-3qrnCbR7D_nDXFRhtB-q2naFOQ7m0
+      - GEMINI_API_KEY=AIzaSyDNlUaZTo8TMjXOjklzqD93jmCuxqha8Dk
+      - MODEL_TO_USE=gemini/gemini-2.5-pro
+    env_file:
+      - frontend/.env.local
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  redis_data:
