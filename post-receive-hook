@@ -1,0 +1,53 @@
+#!/bin/bash
+
+# Git post-receive hook for automatic deployment
+# This script runs every time you push to the VM
+
+echo "🚀 Deployment triggered by Git push!"
+echo "====================================="
+
+# Set the working directory
+WORKING_DIR="/home/ishaantheman/iris-app-working"
+DEPLOY_DIR="/home/ishaantheman/iris-app"
+
+# Create working directory if it doesn't exist
+mkdir -p $WORKING_DIR
+
+# Clean previous working directory
+rm -rf $WORKING_DIR/*
+
+# Checkout the latest code
+echo "📥 Checking out latest code..."
+git --work-tree=$WORKING_DIR --git-dir=$DEPLOY_DIR checkout -f master
+
+# Navigate to working directory
+cd $WORKING_DIR
+
+# Switch to production mode
+echo "🌍 Switching to production mode..."
+./switch-env.sh production
+
+# Stop any existing containers
+echo "🛑 Stopping existing containers..."
+docker compose -f docker-compose.production.yml down 2>/dev/null || true
+
+# Build and start the application
+echo "🏗️ Building and starting application..."
+docker compose -f docker-compose.production.yml up -d --build
+
+# Wait a moment for services to start
+sleep 10
+
+# Check service status
+echo "🔍 Checking service status..."
+docker compose -f docker-compose.production.yml ps
+
+# Show logs
+echo "📋 Recent logs:"
+docker compose -f docker-compose.production.yml logs --tail=20
+
+echo ""
+echo "✅ Deployment completed!"
+echo "🌐 Your app should now be running at: https://irisvision.ai"
+echo "🔧 To check status: docker compose -f docker-compose.production.yml ps"
+echo "📋 To view logs: docker compose -f docker-compose.production.yml logs -f"
