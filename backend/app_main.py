@@ -40,7 +40,9 @@ def create_app():
             "https://www.irisai.vision",
             "https://irisai.vision",
             "https://staging.irisai.vision",
-            "http://localhost:3000",
+            "https://www.irisvision.ai",
+            "https://irisvision.ai",
+            "http://localhost:3000",  # Keep for development
         ],
         allow_credentials=True,
         allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
